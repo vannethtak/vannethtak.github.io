@@ -869,17 +869,20 @@
       var url = `https://api.telegram.org/bot8124883459:AAEomjuvoljIxm-hzDWGOBU6-4yt57NsCT4/sendMessage?chat_id=5034837799&text=${encodeURIComponent(message)}`;
 
       fetch(url)
-    .then(response => response.json())
-    .then(data => {
-      if (data.ok) {
-        document.querySelector('.sent-message').style.display = 'block';
-      } else {
-        document.querySelector('.error-message').style.display = 'block';
-      }
-    })
-    .catch(error => {
-      document.querySelector('.error-message').style.display = 'block';
-    });
+        .then(response => response.json())
+        .then(data => {
+          if (data.ok) {
+            document.querySelector('.sent-message').style.display = 'block';
+            document.querySelector('.error-message').style.display = 'none';
+          } else {
+            document.querySelector('.error-message').style.display = 'block';
+            document.querySelector('.sent-message').style.display = 'none';
+          }
+        })
+        .catch(error => {
+          document.querySelector('.error-message').style.display = 'block';
+          document.querySelector('.sent-message').style.display = 'none';
+        });
     });
   </script>
 </body>
