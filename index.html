@@ -791,7 +791,7 @@
         </div>
       </div>
 
-      <form action="" method="post" role="form" class="php-email-form mt-4 d-none d-md-block">
+      <!-- <form action="" method="post" role="form" class="php-email-form mt-4 d-none d-md-block">
         <div class="row">
           <div class="col-md-6 form-group">
             <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
@@ -803,6 +803,17 @@
         <div class="form-group mt-3">
           <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
         </div>
+        <div class="form-group mt-3">
+          <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+        </div>
+        <div class="my-3">
+          <div class="loading">Loading</div>
+          <div class="error-message"></div>
+          <div class="sent-message">Your message has been sent. Thank you!</div>
+        </div>
+        <div class="text-center"><button type="submit">Send Message</button></div>
+      </form> -->
+      <form id="contact-form" class="php-email-form mt-4 d-none d-md-block">
         <div class="form-group mt-3">
           <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
         </div>
@@ -848,6 +859,27 @@
       };
   
       var typed = new Typed("#typed-text", options);
+    });
+  </script>
+  
+  <script>
+    document.getElementById('contact-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var message = document.querySelector('textarea[name="message"]').value;
+      var url = `https://api.telegram.org/bot8124883459:AAEomjuvoljIxm-hzDWGOBU6-4yt57NsCT4/sendMessage?chat_id=5034837799&text=${encodeURIComponent(message)}`;
+
+      fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok) {
+        document.querySelector('.sent-message').style.display = 'block';
+      } else {
+        document.querySelector('.error-message').style.display = 'block';
+      }
+    })
+    .catch(error => {
+      document.querySelector('.error-message').style.display = 'block';
+    });
     });
   </script>
 </body>
