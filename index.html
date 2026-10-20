@@ -912,7 +912,9 @@ Telegram number: ${phone}
 Message: ${message}`;
 
       // URL to send message to Telegram
-      var url = `https://api.telegram.org/bot7671448373:AAFiK08uOwxwX_cGrVm3D_P1SRSMaZ2KF-w/sendMessage?chat_id=5034837799&text=${encodeURIComponent(formattedMessage)}`;
+      var bot_token = '7671448373:AAFCOr-sBC0rMA35uP-ibiwsjKQzzYZ0ZBg'; 
+      var chat_id = '5034837799';
+      var url = `https://api.telegram.org/bot${bot_token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(formattedMessage)}`;
 
       // Send the message
       fetch(url)
