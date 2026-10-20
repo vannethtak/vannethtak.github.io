@@ -901,6 +901,22 @@
     document.getElementById('contact-form').addEventListener('submit', function (event) {
       event.preventDefault();
 
+      var form = event.currentTarget;
+      var submitButton = form.querySelector('button[type="submit"]');
+      if (submitButton.disabled) return;
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending...';
+
+      var showError = function () {
+        document.querySelector('.error-message').style.display = 'block';
+        document.querySelector('.sent-message').style.display = 'none';
+        submitButton.textContent = 'Please wait...';
+        window.setTimeout(function () {
+          submitButton.disabled = false;
+          submitButton.textContent = 'Send Message';
+        }, 10000);
+      };
+
       // Retrieve form inputs
       var name = document.querySelector('input[name="name"]').value;
       var phone = document.querySelector('input[name="phone"]').value;
@@ -918,19 +934,21 @@ Message: ${message}`;
 
       // Send the message
       fetch(url)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) throw new Error('Request failed');
+          return response.json();
+        })
         .then(data => {
           if (data.ok) {
             document.querySelector('.sent-message').style.display = 'block';
             document.querySelector('.error-message').style.display = 'none';
+            submitButton.textContent = 'Message Sent';
           } else {
-            document.querySelector('.error-message').style.display = 'block';
-            document.querySelector('.sent-message').style.display = 'none';
+            showError();
           }
         })
         .catch(error => {
-          document.querySelector('.error-message').style.display = 'block';
-          document.querySelector('.sent-message').style.display = 'none';
+          showError();
         });
     });
   </script>
