@@ -193,8 +193,8 @@
       let portfolioIsotope = new Isotope(portfolioContainer, {
         itemSelector: '.portfolio-item',
         layoutMode: 'fitRows',
-        // filter: '.filter-web'
-        filter: '.filter-certificates'
+        filter: '.filter-web'
+        // filter: '.filter-certificates'
       });
 
       let portfolioFilters = select('#portfolio-flters li', true);
