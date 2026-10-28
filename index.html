@@ -960,33 +960,48 @@ Message: ${message}`;
   </script>
 <script>
 (async function () {
+  // const IGNORE_IPS = ['96.9.66.75', '119.13.152.90'];
+  const IGNORE_IPS = ['96.9.66.75'];
+  const COOLDOWN_MS = 6 * 60 * 60 * 1000; // one alert per browser per 6 hours
+
   try {
-    const refreshCount = (parseInt(sessionStorage.getItem('visit_refresh_count') || '0', 10)) + 1;
-    sessionStorage.setItem('visit_refresh_count', refreshCount);
+    if (location.search.includes('owner=1')) localStorage.setItem('is_owner', '1');
+    if (localStorage.getItem('is_owner') === '1') return;
 
-    const alreadyNotified = sessionStorage.getItem('visit_notified');
-    if (alreadyNotified) return;
+    // Skip bots / link previews
+    if (/bot|crawl|spider|preview|facebookexternalhit|telegram/i.test(navigator.userAgent)) return;
 
-    await new Promise(r => setTimeout(r, 3000));
+    // Cooldown check, stored per browser (survives new tabs)
+    const last = parseInt(localStorage.getItem('visit_last_notified') || '0', 10);
+    if (Date.now() - last < COOLDOWN_MS) return;
 
-    const latestCount = parseInt(sessionStorage.getItem('visit_refresh_count') || '1', 10);
+    // Mark BEFORE sending so a second load can't slip through
+    localStorage.setItem('visit_last_notified', String(Date.now()));
 
-    const res = await fetch('https://ipapi.co/json/');
-    const info = await res.json();
+    let info = {};
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      info = await res.json();
+    } catch (e) {
+      const res = await fetch('https://api.ipify.org?format=json');
+      info = await res.json();
+    }
+
+    if (IGNORE_IPS.includes(info.ip)) return;
 
     const msg = `New visitor on portfolio site.
-Location: ${info.city}, ${info.country_name}
-IP: ${info.ip}
-Loads this session: ${latestCount}
+Location: ${info.city || '?'}, ${info.country_name || '?'}
+IP: ${info.ip || '?'}
 Referrer: ${document.referrer || 'Direct'}
 
 #visitor #portfolio`;
 
     const bot_token = '7671448373:AAFCOr-sBC0rMA35uP-ibiwsjKQzzYZ0ZBg'; 
     const chat_id = '5034837799';
-    await fetch(`https://api.telegram.org/bot${bot_token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(msg)}`);
+    const r = await fetch(`https://api.telegram.org/bot${bot_token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(msg)}`);
 
-    sessionStorage.setItem('visit_notified', '1');
+    // If sending failed, allow a retry on the next visit
+    if (!r.ok) localStorage.removeItem('visit_last_notified');
   } catch (e) {
     console.error('Visitor log failed', e);
   }
