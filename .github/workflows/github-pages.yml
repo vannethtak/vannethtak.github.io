@@ -37,6 +37,9 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          VITE_PORTFOLIO_API_URL: http://140.245.35.136
+          VITE_PORTFOLIO_SOURCE: api
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
