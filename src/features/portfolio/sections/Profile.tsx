@@ -1,6 +1,6 @@
 import { calcAge } from "@/shared/lib/utils";
 import type { ReactNode } from "react";
-import { interests, profile, skills, stats } from "../data/content";
+import { usePortfolioContent } from "../data/content";
 import { useCountUp } from "@/shared/hooks/useCountUp";
 import { useInView } from "@/shared/hooks/useInView";
 import { Icon, type IconName } from "@/shared/ui/Icon";
@@ -76,49 +76,43 @@ function SkillBar({
   );
 }
 
-const facts: [string, ReactNode][] = [
-  ["Birthday", profile.birthday],
-  [
-    "Website",
-    <a
-      href={profile.website}
-      target="_blank"
-      rel="noreferrer"
-      className="text-accent transition-colors hover:text-paper"
-    >
-      vanneth-dev.github.io
-    </a>,
-  ],
-  [
-    "Phone",
-    <a
-      href={profile.phoneHref}
-      className="text-accent transition-colors hover:text-paper"
-    >
-      {profile.phone}
-    </a>,
-  ],
-  ["City", "Phnom Penh, Cambodia"],
-  [
-    "Age",
-    <span className="text-accent">
-      {calcAge(profile.birthYear, profile.birthMonth, profile.birthDay)}
-    </span>,
-  ],
-  ["Degree", profile.degree],
-  [
-    "Email",
-    <a
-      href={`mailto:${profile.email}`}
-      className="text-accent transition-colors hover:text-paper"
-    >
-      {profile.email}
-    </a>,
-  ],
-  ["Freelance", <span className="text-accent">{profile.freelance}</span>],
-];
-
 export default function Profile() {
+  const { interests, profile, skills, stats } = usePortfolioContent();
+  const facts: [string, ReactNode][] = [
+    ["Birthday", profile.birthday],
+    [
+      "Website",
+      <a
+        href={profile.website}
+        target="_blank"
+        rel="noreferrer"
+        className="text-accent transition-colors hover:text-paper"
+      >
+        {profile.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+      </a>,
+    ],
+    [
+      "Phone",
+      <a href={profile.phoneHref} className="text-accent transition-colors hover:text-paper">
+        {profile.phone}
+      </a>,
+    ],
+    ["City", profile.location],
+    [
+      "Age",
+      <span className="text-accent">
+        {calcAge(profile.birthYear, profile.birthMonth, profile.birthDay)}
+      </span>,
+    ],
+    ["Degree", profile.degree],
+    [
+      "Email",
+      <a href={`mailto:${profile.email}`} className="text-accent transition-colors hover:text-paper">
+        {profile.email}
+      </a>,
+    ],
+    ["Freelance", <span className="text-accent">{profile.freelance}</span>],
+  ];
   const age = calcAge(profile.birthYear, profile.birthMonth, profile.birthDay);
   return (
     <section id="about" className="relative py-16 md:py-28">
@@ -138,7 +132,7 @@ export default function Profile() {
               />
               <div className="group relative overflow-hidden rounded-lg border border-line">
                 <img
-                  src="/images/profile-studio-v2.jpg"
+                  src={profile.avatar || "/images/profile-studio-v2.jpg"}
                   alt="Vanneth Tak"
                   width={1122}
                   height={1402}
@@ -169,8 +163,7 @@ export default function Profile() {
               Full-Stack <span className="text-accent">Developer</span>
             </h3>
             <p className="mt-6 leading-loose text-mist">
-              I am{" "}
-              <strong className="font-semibold text-paper">Vanneth Tak</strong>,
+              I am <strong className="font-semibold text-paper">{profile.name}</strong>,
               a dedicated Full-Stack Developer specializing in scalable web
               applications, RESTful APIs, and robust backend systems.{" "}
               <span className="font-mono text-base font-semibold text-accent md:text-lg">

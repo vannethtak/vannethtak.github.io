@@ -4,7 +4,7 @@ import { Icon } from "@/shared/ui/Icon";
 import { SocialIcon } from "@/shared/ui/SocialIcon";
 import { cn } from "@/shared/lib/utils";
 import { useEffect, useState } from "react";
-import { profile, techTicker } from "../data/content";
+import { usePortfolioContent } from "../data/content";
 
 const links = [
   { id: "header", label: "Home" },
@@ -14,10 +14,10 @@ const links = [
   { id: "contact", label: "Contact" },
 ];
 
-function TickerRow() {
+function TickerRow({ items }: { items: string[] }) {
   return (
     <div className="flex shrink-0 items-center">
-      {techTicker.map((t) => (
+      {items.map((t) => (
         <span
           key={t}
           className="flex items-center font-mono text-xs uppercase tracking-[0.3em] text-dim"
@@ -31,6 +31,7 @@ function TickerRow() {
 }
 
 export default function NavigationHeader() {
+  const { profile, techTicker } = usePortfolioContent();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const active = useScrollSpy(links.map((l) => l.id));
@@ -83,7 +84,12 @@ export default function NavigationHeader() {
             </span>
             <span className="flex flex-col gap-1 font-mono">
               <span className="text-sm text-mist transition-colors group-hover:text-paper">
-                Vanneth<span className="text-accent">.</span>Tak
+                {profile.name.split(" ").map((part, index) => (
+                  <span key={part}>
+                    {index > 0 && <span className="text-accent">.</span>}
+                    {part}
+                  </span>
+                ))}
               </span>
               <span className="min-h-4 text-[10px] leading-4 text-accent sm:text-[11px]">
                 {profile.roles[0]}
@@ -202,9 +208,12 @@ export default function NavigationHeader() {
             className="hero-heading hero-rise whitespace-nowrap font-display text-8xl leading-[0.92] font-extrabold tracking-tight text-paper lg:text-[7.2rem]"
             style={{ animationDelay: "0.12s" }}
           >
-            <span>VANNETH</span>
-            <br />
-            <span className="outline-type">TAK</span>
+            {profile.name.trim().split(/\s+/).map((part, index, parts) => (
+              <span key={`${part}-${index}`} className={index > 0 ? "outline-type" : undefined}>
+                {part.toUpperCase()}
+                {index < parts.length - 1 && <br />}
+              </span>
+            ))}
           </h1>
 
           <div
@@ -256,10 +265,10 @@ export default function NavigationHeader() {
             style={{ animationDelay: "0.62s" }}
           >
             {[
-              { k: "Role", v: "Full-Stack Developer" },
-              { k: "Base", v: "Phnom Penh, Cambodia" },
-              { k: "Core Stack", v: "Node.js · Laravel · React · Angular" },
-              { k: "Status", v: "Full-Time — Available", accent: true },
+              { k: "Role", v: profile.roles[0] ?? "Software Engineer" },
+              { k: "Base", v: profile.location },
+              { k: "Core Stack", v: techTicker.slice(0, 4).join(" · ") },
+              { k: "Status", v: profile.freelance, accent: true },
             ].map((m) => (
               <div key={m.k}>
                 <p className="font-mono text-[10px] tracking-[0.3em] text-dim uppercase">
@@ -280,9 +289,9 @@ export default function NavigationHeader() {
 
         <div className="marquee relative mt-10 sm:mt-16 w-full overflow-hidden border-y border-line py-4">
           <div className="marquee-track flex w-max">
-            <TickerRow />
+            <TickerRow items={techTicker} />
             <div aria-hidden>
-              <TickerRow />
+              <TickerRow items={techTicker} />
             </div>
           </div>
         </div>

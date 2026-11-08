@@ -1,6 +1,105 @@
-import { type IconName } from "@/shared/ui/Icon";
+import { createContext, createElement, useContext, useEffect, useState, type ReactNode } from "react";
+import type { IconName } from "@/shared/ui/Icon";
 
-export const profile = {
+export type Profile = {
+  name: string;
+  roles: string[];
+  tagline: string;
+  location: string;
+  address: string;
+  phone: string;
+  phoneHref: string;
+  email: string;
+  website: string;
+  birthday: string;
+  birthYear: number;
+  birthMonth: number;
+  birthDay: number;
+  degree: string;
+  freelance: string;
+  avatar?: string | null;
+  socials: { label: string; href: string }[];
+};
+
+export type Stat = {
+  value: number;
+  suffix: string;
+  label: string;
+  icon: IconName;
+};
+
+export type Interest = {
+  name: string;
+  color: string;
+  icon: IconName;
+};
+
+export type Skill = {
+  name: string;
+  level: number;
+  id?: string;
+};
+
+export type Project = {
+  image: string;
+  id: string;
+  title: string;
+  description: string;
+  variant: "table" | "chart" | "enroll" | "rings" | "jobs" | "admin";
+  accent: string;
+  tags: string[];
+  context: string;
+};
+
+export type Certificate = {
+  id: string;
+  title: string;
+  issuer: string;
+  description: string;
+  url: string;
+};
+
+export type Service = {
+  title: string;
+  body: string;
+  icon: IconName;
+  id?: string;
+};
+
+export type ResumeBlock = {
+  heading?: string;
+  items?: string[];
+  text?: string;
+};
+
+export type ResumeItem = {
+  title: string;
+  period: string;
+  org: string;
+  orgHref?: string;
+  orgLabel?: string;
+  lead?: string;
+  bullets?: string[];
+  blocks?: ResumeBlock[];
+  id?: string;
+};
+
+export type PortfolioContent = {
+  profile: Profile;
+  aboutSummary: string;
+  techTicker: string[];
+  stats: Stat[];
+  interests: Interest[];
+  certificates: Certificate[];
+  services: Service[];
+  experience: ResumeItem[];
+  education: ResumeItem[];
+  skills: Skill[];
+  projects: Project[];
+};
+
+// Static content remains the fallback and can be selected with VITE_PORTFOLIO_SOURCE=static.
+export const profile: Profile = {
   name: "Vanneth Tak",
   roles: ["Full-Stack Developer", "Freelancer", "Software Engineer"],
   tagline:
@@ -18,22 +117,10 @@ export const profile = {
   degree: "Software Engineering",
   freelance: "Available",
   socials: [
-    {
-      label: "LinkedIn",
-      href: "https://www.linkedin.com/in/vannethtak/",
-    },
-    {
-      label: "GitHub",
-      href: "https://github.com/vanneth-dev",
-    },
-    {
-      label: "Telegram",
-      href: "https://t.me/vannethtak",
-    },
-    {
-      label: "Facebook",
-      href: "https://www.facebook.com/vannethtak/",
-    },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/vannethtak/" },
+    { label: "GitHub", href: "https://github.com/vanneth-dev" },
+    { label: "Telegram", href: "https://t.me/vannethtak" },
+    { label: "Facebook", href: "https://www.facebook.com/vannethtak/" },
   ],
 };
 
@@ -55,106 +142,28 @@ export const techTicker = [
   "Docker",
 ];
 
-export type Stat = {
-  value: number;
-  suffix: string;
-  label: string;
-  icon: IconName;
-};
-
 export const stats: Stat[] = [
-  {
-    value: 1,
-    suffix: "",
-    label: "Freelance Projects",
-    icon: "smile",
-  },
-  {
-    value: 20,
-    suffix: "+",
-    label: "Projects Completed",
-    icon: "journal",
-  },
-  {
-    value: 8,
-    suffix: "",
-    label: "Hours of Support",
-    icon: "headset",
-  },
-  {
-    value: 10,
-    suffix: "+",
-    label: "Full-Stack Projects",
-    icon: "award",
-  },
+  { value: 1, suffix: "", label: "Freelance Projects", icon: "smile" },
+  { value: 20, suffix: "+", label: "Projects Completed", icon: "journal" },
+  { value: 8, suffix: "", label: "Hours of Support", icon: "headset" },
+  { value: 10, suffix: "+", label: "Full-Stack Projects", icon: "award" },
 ];
 
-export const skills = [
-  {
-    name: "Laravel",
-    level: 80,
-  },
-  {
-    name: "React",
-    level: 80,
-  },
-  {
-    name: "Tailwind & Bootstrap",
-    level: 80,
-  },
-  {
-    name: "Version Control (Git)",
-    level: 80,
-  },
-  {
-    name: "NestJS",
-    level: 70,
-  },
-  {
-    name: "Cloud Computing",
-    level: 70,
-  },
+export const skills: Skill[] = [
+  { name: "Laravel", level: 80 },
+  { name: "React", level: 80 },
+  { name: "Tailwind & Bootstrap", level: 80 },
+  { name: "Version Control (Git)", level: 80 },
+  { name: "NestJS", level: 70 },
+  { name: "Cloud Computing", level: 70 },
 ];
-
-export type Interest = {
-  name: string;
-  color: string;
-  icon: IconName;
-};
 
 export const interests: Interest[] = [
-  {
-    name: "Coding",
-    color: "#f5b759",
-    icon: "code",
-  },
-  {
-    name: "Music",
-    color: "#5b8cff",
-    icon: "music",
-  },
-  {
-    name: "Travel",
-    color: "#f0568c",
-    icon: "globe",
-  },
-  {
-    name: "Football",
-    color: "#b07cff",
-    icon: "ball",
-  },
+  { name: "Coding", color: "#f5b759", icon: "code" },
+  { name: "Music", color: "#5b8cff", icon: "music" },
+  { name: "Travel", color: "#f0568c", icon: "globe" },
+  { name: "Football", color: "#b07cff", icon: "ball" },
 ];
-
-export type Project = {
-  image: string;
-  id: string;
-  title: string;
-  description: string;
-  variant: "table" | "chart" | "enroll" | "rings" | "jobs" | "admin";
-  accent: string;
-  tags: string[];
-  context: string;
-};
 
 export const projects: Project[] = [
   {
@@ -193,8 +202,7 @@ export const projects: Project[] = [
     id: "tvet-rpl",
     image: "/images/work-tvet-rpl.png",
     title: "TVET RPL",
-    description:
-      "ប្រព័ន្ធវាយតម្លៃផអែកលើសមត្ថភាព និងការផ្តល់គុណវុឌ្ឍិសម្រាប់កម្ពុជា",
+    description: "ប្រព័ន្ធវាយតម្លៃផអែកលើសមត្ថភាព និងការផ្តល់គុណវុឌ្ឍិសម្រាប់កម្ពុជា",
     variant: "rings",
     accent: "#f0568f",
     tags: ["Express", "Angular", "MongoDB"],
@@ -223,14 +231,6 @@ export const projects: Project[] = [
   },
 ];
 
-export type Certificate = {
-  id: string;
-  title: string;
-  issuer: string;
-  description: string;
-  url: string;
-};
-
 export const certificates: Certificate[] = [
   {
     id: "js",
@@ -254,12 +254,6 @@ export const certificates: Certificate[] = [
     url: "https://www.coursera.org/account/accomplishments/verify/GR6CYPFDAUNY",
   },
 ];
-
-export type Service = {
-  title: string;
-  body: string;
-  icon: IconName;
-};
 
 export const services: Service[] = [
   {
@@ -293,23 +287,6 @@ export const services: Service[] = [
     icon: "wrench",
   },
 ];
-
-export type ResumeBlock = {
-  heading?: string;
-  items?: string[];
-  text?: string;
-};
-
-export type ResumeItem = {
-  title: string;
-  period: string;
-  org: string;
-  orgHref?: string;
-  orgLabel?: string;
-  lead?: string;
-  bullets?: string[];
-  blocks?: ResumeBlock[];
-};
 
 export const experience: ResumeItem[] = [
   {
@@ -378,14 +355,8 @@ export const education: ResumeItem[] = [
     orgHref: "https://www.aditi.com.kh/en",
     orgLabel: "website",
     blocks: [
-      {
-        heading: "Technology Focus",
-        items: ["Swift Programming Language", "iOS App Development"],
-      },
-      {
-        heading: "Provided by",
-        items: ["ADITI Academy"],
-      },
+      { heading: "Technology Focus", items: ["Swift Programming Language", "iOS App Development"] },
+      { heading: "Provided by", items: ["ADITI Academy"] },
       {
         heading: "Sponsored by",
         items: [
@@ -409,17 +380,9 @@ export const education: ResumeItem[] = [
     blocks: [
       {
         heading: "Skills Covered",
-        items: [
-          "Full-Stack Web Development",
-          "PHP",
-          "Laravel Framework",
-          "Database Management",
-        ],
+        items: ["Full-Stack Web Development", "PHP", "Laravel Framework", "Database Management"],
       },
-      {
-        heading: "Emphasis On",
-        items: ["Soft Skills", "Hands-on Technical Skills"],
-      },
+      { heading: "Emphasis On", items: ["Soft Skills", "Hands-on Technical Skills"] },
     ],
   },
   {
@@ -436,3 +399,70 @@ export const education: ResumeItem[] = [
 
 export const aboutSummary =
   "Dedicated and passionate Software Engineer with a focus on building scalable web applications. Proficient in modern JavaScript frameworks and PHP ecosystems. Transitioning into specialized backend architectures with NestJS, while leveraging AWS for cloud infrastructure. Committed to writing clean, efficient code and continuous technical growth. Available for freelance projects.";
+
+export const portfolioContent: PortfolioContent = {
+  profile,
+  aboutSummary,
+  techTicker,
+  stats,
+  interests,
+  certificates,
+  services,
+  experience,
+  education,
+  skills,
+  projects,
+};
+
+const PORTFOLIO_API_URL = import.meta.env.VITE_PORTFOLIO_API_URL ?? "http://localhost:3000";
+const PORTFOLIO_SOURCE = import.meta.env.VITE_PORTFOLIO_SOURCE ?? "api";
+
+type PortfolioApiResponse = { data: PortfolioContent };
+
+export async function fetchPortfolioContent(
+  signal?: AbortSignal,
+): Promise<PortfolioContent> {
+  const response = await fetch(`${PORTFOLIO_API_URL}/api/v1/public/portfolio`, { signal });
+  if (!response.ok) {
+    throw new Error(`Portfolio API returned ${response.status}`);
+  }
+
+  const result = (await response.json()) as PortfolioApiResponse;
+  const content = result?.data;
+  if (
+    !content?.profile ||
+    !Array.isArray(content.services) ||
+    !Array.isArray(content.projects)
+  ) {
+    throw new Error("Portfolio API returned an invalid response");
+  }
+  return content;
+}
+
+const PortfolioContentContext = createContext<PortfolioContent>(portfolioContent);
+
+export function PortfolioContentProvider({ children }: { children: ReactNode }) {
+  const [content, setContent] = useState(portfolioContent);
+
+  useEffect(() => {
+    if (PORTFOLIO_SOURCE !== "api") return;
+
+    const controller = new AbortController();
+    fetchPortfolioContent(controller.signal)
+      .then(setContent)
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) return;
+        if (import.meta.env.DEV) {
+          console.warn("Unable to load portfolio API; using static content.", error);
+        }
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  return createElement(PortfolioContentContext.Provider, { value: content }, children);
+}
+
+export function usePortfolioContent() {
+  return useContext(PortfolioContentContext);
+}

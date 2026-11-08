@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { profile } from "../data/content";
+import { usePortfolioContent } from "../data/content";
 import { cn } from "@/shared/lib/utils";
 import { Icon } from "@/shared/ui/Icon";
 import { Reveal } from "@/shared/ui/Reveal";
@@ -15,6 +15,7 @@ const inputClass =
   "w-full rounded-md border border-line bg-ink px-4 py-3 text-base md:text-sm text-paper placeholder:text-dim outline-none transition-colors focus:border-accent/70 focus:ring-2 focus:ring-accent/15";
 
 export default function ContactForm() {
+  const { profile } = usePortfolioContent();
   const [status, setStatus] = useState<Status>("idle");
   const [form, setForm] = useState({ name: "", phone: "", message: "" });
 

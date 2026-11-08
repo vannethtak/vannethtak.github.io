@@ -1,9 +1,11 @@
-import { services } from "../data/content";
+import { usePortfolioContent } from "../data/content";
 import { Icon } from "@/shared/ui/Icon";
 import { Reveal } from "@/shared/ui/Reveal";
 import { SectionHead } from "@/shared/ui/SectionHead";
 
 export default function Services() {
+  const { services } = usePortfolioContent();
+
   return (
     <section id="services" className="relative py-16 md:py-28">
       <div className="mx-auto max-w-6xl px-5">

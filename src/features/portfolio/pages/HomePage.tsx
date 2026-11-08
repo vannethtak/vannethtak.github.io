@@ -9,9 +9,18 @@ import Projects from "../sections/Projects";
 import Services from "../sections/Services";
 import SiteFooter from "../layout/SiteFooter";
 import Sidebar from "../layout/Sidebar";
+import { PortfolioContentProvider } from "../data/content";
 import { useScrollProgress } from "@/shared/hooks/useScrollProgress";
 
 export default function HomePage() {
+  return (
+    <PortfolioContentProvider>
+      <HomePageContent />
+    </PortfolioContentProvider>
+  );
+}
+
+function HomePageContent() {
   const progress = useScrollProgress();
   // Shape: ring, spark, crosshair, dot, diamond, square, triangle, arrow, hexagon
   const cursorVariant: CursorVariant = "arrow";

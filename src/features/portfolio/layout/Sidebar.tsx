@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { profile } from "../data/content";
+import { usePortfolioContent } from "../data/content";
 import { useScrollSpy } from "@/shared/hooks/useScrollSpy";
 import { cn } from "@/shared/lib/utils";
 import { Icon } from "@/shared/ui/Icon";
@@ -17,6 +17,7 @@ const sections = [
 const sectionIds = sections.map(({ id }) => id);
 
 export default function Sidebar() {
+  const { profile } = usePortfolioContent();
   const active = useScrollSpy(sectionIds);
   const [showSocials, setShowSocials] = useState(true);
 

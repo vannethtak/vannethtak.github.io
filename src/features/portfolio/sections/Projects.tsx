@@ -1,10 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  certificates,
-  projects,
-  type Certificate,
-  type Project,
-} from "../data/content";
+import { usePortfolioContent, type Certificate, type Project } from "../data/content";
 import { cn } from "@/shared/lib/utils";
 import { Icon } from "@/shared/ui/Icon";
 import { Reveal } from "@/shared/ui/Reveal";
@@ -439,6 +434,7 @@ type Selected =
   | { kind: "cert"; item: Certificate };
 
 export default function Projects() {
+  const { certificates, projects } = usePortfolioContent();
   const [filter, setFilter] = useState<Filter>("projects");
   const [selected, setSelected] = useState<Selected | null>(null);
 

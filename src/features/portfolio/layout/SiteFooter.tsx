@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import { profile } from "../data/content";
+import { usePortfolioContent } from "../data/content";
 import { Icon } from "@/shared/ui/Icon";
 import { useFullscreen } from "@/shared/hooks/useFullscreen";
 
 export default function SiteFooter() {
+  const { profile } = usePortfolioContent();
   const year = new Date().getFullYear();
   const { isFullscreen, supported, toggle } = useFullscreen();
   return (

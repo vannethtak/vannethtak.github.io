@@ -1,10 +1,4 @@
-import {
-  aboutSummary,
-  education,
-  experience,
-  profile,
-  type ResumeItem,
-} from "../data/content";
+import { usePortfolioContent, type ResumeItem } from "../data/content";
 import { Icon } from "@/shared/ui/Icon";
 import { Reveal } from "@/shared/ui/Reveal";
 import { SectionHead } from "@/shared/ui/SectionHead";
@@ -90,6 +84,8 @@ function TimelineItem({ item, index }: { item: ResumeItem; index: number }) {
 }
 
 export default function Experience() {
+  const { aboutSummary, education, experience, profile } = usePortfolioContent();
+
   return (
     <section
       id="resume"
