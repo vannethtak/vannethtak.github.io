@@ -1,4 +1,5 @@
-import { createContext, createElement, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, createElement, useContext, type ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
 import type { IconName } from "@/shared/ui/Icon";
 
 export type Profile = {
@@ -416,6 +417,11 @@ export const portfolioContent: PortfolioContent = {
 
 const PORTFOLIO_API_URL = import.meta.env.VITE_PORTFOLIO_API_URL ?? "http://localhost:3000";
 const PORTFOLIO_SOURCE = import.meta.env.VITE_PORTFOLIO_SOURCE ?? "api";
+const configuredCacheMinutes = Number(import.meta.env.VITE_PORTFOLIO_CACHE_MINUTES ?? "1");
+const PORTFOLIO_CACHE_TIME_MS =
+  Number.isFinite(configuredCacheMinutes) && configuredCacheMinutes > 0
+    ? configuredCacheMinutes * 60_000
+    : 60_000;
 
 type PortfolioApiResponse = { data: PortfolioContent };
 
@@ -442,25 +448,22 @@ export async function fetchPortfolioContent(
 const PortfolioContentContext = createContext<PortfolioContent>(portfolioContent);
 
 export function PortfolioContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState(portfolioContent);
+  const { data = portfolioContent } = useQuery({
+    queryKey: ["portfolio-content"],
+    queryFn: ({ signal }) => fetchPortfolioContent(signal),
+    enabled: PORTFOLIO_SOURCE === "api",
+    staleTime: PORTFOLIO_CACHE_TIME_MS,
+    gcTime: PORTFOLIO_CACHE_TIME_MS,
+    refetchInterval: PORTFOLIO_CACHE_TIME_MS,
+    refetchIntervalInBackground: true,
+    placeholderData: portfolioContent,
+  });
 
-  useEffect(() => {
-    if (PORTFOLIO_SOURCE !== "api") return;
-
-    const controller = new AbortController();
-    fetchPortfolioContent(controller.signal)
-      .then(setContent)
-      .catch((error: unknown) => {
-        if (controller.signal.aborted) return;
-        if (import.meta.env.DEV) {
-          console.warn("Unable to load portfolio API; using static content.", error);
-        }
-      });
-
-    return () => controller.abort();
-  }, []);
-
-  return createElement(PortfolioContentContext.Provider, { value: content }, children);
+  return createElement(
+    PortfolioContentContext.Provider,
+    { value: data },
+    children,
+  );
 }
 
 export function usePortfolioContent() {
