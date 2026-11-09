@@ -454,8 +454,7 @@ export function PortfolioContentProvider({ children }: { children: ReactNode }) 
     enabled: PORTFOLIO_SOURCE === "api",
     staleTime: PORTFOLIO_CACHE_TIME_MS,
     gcTime: PORTFOLIO_CACHE_TIME_MS,
-    refetchInterval: PORTFOLIO_CACHE_TIME_MS,
-    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: false,
     placeholderData: portfolioContent,
   });
 
