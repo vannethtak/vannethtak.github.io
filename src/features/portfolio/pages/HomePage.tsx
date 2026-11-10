@@ -16,9 +16,7 @@ import { useScrollProgress } from "@/shared/hooks/useScrollProgress";
 
 export default function HomePage() {
   useEffect(() => {
-    void recordPageVisit(
-      import.meta.env.VITE_PORTFOLIO_API_URL ?? "http://localhost:3000",
-    );
+    void recordPageVisit();
   }, []);
 
   return (

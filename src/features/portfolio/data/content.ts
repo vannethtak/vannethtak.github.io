@@ -415,7 +415,6 @@ export const portfolioContent: PortfolioContent = {
   projects,
 };
 
-const PORTFOLIO_API_URL = import.meta.env.VITE_PORTFOLIO_API_URL ?? "http://localhost:3000";
 const PORTFOLIO_SOURCE = import.meta.env.VITE_PORTFOLIO_SOURCE ?? "api";
 const configuredCacheMinutes = Number(import.meta.env.VITE_PORTFOLIO_CACHE_MINUTES ?? "1");
 const PORTFOLIO_CACHE_TIME_MS =
@@ -428,7 +427,7 @@ type PortfolioApiResponse = { data: PortfolioContent };
 export async function fetchPortfolioContent(
   signal?: AbortSignal,
 ): Promise<PortfolioContent> {
-  const response = await fetch(`${PORTFOLIO_API_URL}/api/v1/public/portfolio`, { signal });
+  const response = await fetch("/api/v1/public/portfolio", { signal });
   if (!response.ok) {
     throw new Error(`Portfolio API returned ${response.status}`);
   }

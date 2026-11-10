@@ -23,12 +23,9 @@ function isLocalHost(hostname: string): boolean {
 
 // One visit per page per tab session. Stored IDs survive reloads and make
 // retries idempotent even when a response is lost after the API saves it.
-export async function recordPageVisit(apiUrl: string): Promise<void> {
+export async function recordPageVisit(): Promise<void> {
   try {
-    if (
-      isLocalHost(window.location.hostname) ||
-      isLocalHost(new URL(apiUrl).hostname)
-    ) return;
+    if (isLocalHost(window.location.hostname)) return;
 
     const session = window.sessionStorage;
     const visitorId = storedId(window.localStorage, "portfolio-visitor-id");
@@ -41,7 +38,7 @@ export async function recordPageVisit(apiUrl: string): Promise<void> {
 
     pendingEvents.add(eventId);
     try {
-      const response = await fetch(`${apiUrl.replace(/\/$/, "")}/api/v1/analytics/page-view`, {
+      const response = await fetch("/api/v1/analytics/page-view", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
