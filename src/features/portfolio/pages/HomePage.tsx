@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import ContactForm from "../sections/ContactForm";
 import CursorBackground from "../effects/CursorBackground";
 import CursorEffect, { type CursorEffectStyle } from "../effects/CursorEffect";
@@ -10,9 +11,16 @@ import Services from "../sections/Services";
 import SiteFooter from "../layout/SiteFooter";
 import Sidebar from "../layout/Sidebar";
 import { PortfolioContentProvider } from "../data/content";
+import { recordPageVisit } from "../data/analytics";
 import { useScrollProgress } from "@/shared/hooks/useScrollProgress";
 
 export default function HomePage() {
+  useEffect(() => {
+    void recordPageVisit(
+      import.meta.env.VITE_PORTFOLIO_API_URL ?? "http://localhost:3000",
+    );
+  }, []);
+
   return (
     <PortfolioContentProvider>
       <HomePageContent />
