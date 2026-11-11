@@ -1,5 +1,6 @@
 import { createContext, createElement, useContext, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { apiUrl } from "@/shared/lib/api";
 import type { IconName } from "@/shared/ui/Icon";
 
 export type Profile = {
@@ -427,7 +428,7 @@ type PortfolioApiResponse = { data: PortfolioContent };
 export async function fetchPortfolioContent(
   signal?: AbortSignal,
 ): Promise<PortfolioContent> {
-  const response = await fetch("/api/v1/public/portfolio", { signal });
+  const response = await fetch(apiUrl("/api/v1/public/portfolio"), { signal });
   if (!response.ok) {
     throw new Error(`Portfolio API returned ${response.status}`);
   }
